@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Define here the models for your scraped items
 #
 # See documentation in:
@@ -7,8 +5,12 @@
 
 import scrapy
 
+class EkantipurScraperItem(scrapy.Item):
+    title = scrapy.Field()
+    author = scrapy.Field()
+    date = scrapy.Field()
+    place = scrapy.Field()
+    category = scrapy.Field()
+    content = scrapy.Field()
+    url = scrapy.Field()
 
-class ShabdasankalakItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
