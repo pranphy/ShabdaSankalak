@@ -3,36 +3,7 @@ import calendar
 import json
 import scrapy
 from shabdasankalak.items import EkantipurScraperItem
-
-def is_nepali_line(line: str, threshold: float = 0.3) -> bool:
-    """
-    Decide if a line is Nepali content based on ratio of Devanagari characters.
-    Keeps lines with enough Nepali script even if they contain punctuation/numbers.
-    """
-    line = line.strip()
-    if not line:
-        return False
-    total_chars = len(line)
-    nepali_chars = len(re.findall(r'[\u0900-\u097F]', line))
-    ratio = nepali_chars / total_chars if total_chars > 0 else 0
-    return ratio >= threshold
-
-def clean_content(text: str) -> str:
-    """
-    Normalize spaces, remove English boilerplate lines (social links, ads, etc.),
-    and keep Nepali content.
-    """
-    # Replace non-breaking spaces with normal spaces
-    text = text.replace("\xa0", " ")
-
-    lines = text.splitlines()
-    cleaned = []
-    for line in lines:
-        if is_nepali_line(line):
-            # Collapse multiple spaces
-            line = re.sub(r"\s+", " ", line)
-            cleaned.append(line.strip())
-    return "\n".join(cleaned)
+from shabdasankalak.utils import is_nepali_line, clean_content
 
 class EkantipurSpider(scrapy.Spider):
     name = "ekantipur"

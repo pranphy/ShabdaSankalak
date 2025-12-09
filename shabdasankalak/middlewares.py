@@ -151,11 +151,22 @@ class CloudscraperMiddleware:
                     allow_redirects=True,
                 )
 
-                # Build Scrapy response
+                # Build Scrapy response. cloudscraper/requests may already have
+                # decompressed resp.content while leaving Content-Encoding in
+                # headers. Remove compression-related headers to avoid
+                # Scrapy's HttpCompressionMiddleware trying to gunzip
+                # an already-decompressed body (which raises BadGzipFile).
+                resp_headers = {}
+                for k, v in resp.headers.items():
+                    # Filter out compression/transfer headers
+                    if k.lower() in ("content-encoding", "transfer-encoding"):
+                        continue
+                    resp_headers[k] = v
+
                 return HtmlResponse(
                     url=str(resp.url),
                     status=resp.status_code,
-                    headers=resp.headers,
+                    headers=resp_headers,
                     body=resp.content,
                     encoding=resp.encoding or "utf-8",
                     request=request,
