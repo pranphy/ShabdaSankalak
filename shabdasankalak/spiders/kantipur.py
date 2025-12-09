@@ -6,7 +6,7 @@ from shabdasankalak.items import EkantipurScraperItem
 from shabdasankalak.utils import is_nepali_line, clean_content
 
 class EkantipurSpider(scrapy.Spider):
-    name = "ekantipur"
+    name = "kantipur"
     allowed_domains = ["ekantipur.com"]
     categories = [
         'Art',

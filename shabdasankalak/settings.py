@@ -47,6 +47,7 @@ DEFAULT_REQUEST_HEADERS = {
 }
 
 DOWNLOADER_MIDDLEWARES = {
+    "shabdasankalak.middlewares.SkipExistingMiddleware": 100,
     "shabdasankalak.middlewares.CloudscraperMiddleware": 560,
     "scrapy.downloadermiddlewares.redirect.RedirectMiddleware": 600,
     "scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware": 810,
@@ -55,12 +56,8 @@ DOWNLOADER_MIDDLEWARES = {
 }
 
 ITEM_PIPELINES = {
-    # Use site-specific pipelines so Ekantipur and Ukaalo items are
-    # stored in their intended folder structure.
-    'shabdasankalak.pipelines.EkantipurSaveEachItemPipeline': 300,
-    'shabdasankalak.pipelines.UkaaloSaveEachItemPipeline': 310,
-    # Generic pipeline is still available if you prefer it instead
-    # 'shabdasankalak.pipelines.SaveEachItemPipeline': 300,
+    # Unified pipeline for all spiders
+    'shabdasankalak.pipelines.ShabdaSankalakPipeline': 300,
 }
 
 

@@ -6,6 +6,10 @@ import logging
 from urllib.parse import urlparse
 from scrapy.http import HtmlResponse
 import cloudscraper
+from scrapy.exceptions import IgnoreRequest
+from shabdasankalak.utils import get_hashed_file_path
+import os
+
 
 from scrapy import signals
 
@@ -175,3 +179,23 @@ class CloudscraperMiddleware:
                 logger.warning(f"Cloudscraper fetch failed for {request.url}: {e}")
                 # Let Scrapy try the normal downloader/retry middleware
                 return None
+
+
+class SkipExistingMiddleware:
+    """
+    Downloader middleware that checks if the item for the requested URL
+    already exists on disk. If so, it raises IgnoreRequest to skip the download.
+    """
+    def process_request(self, request, spider):
+        # Only check for GET requests that look like articles
+        if request.method != 'GET':
+            return None
+            
+        # Use the utility to determine where the file would be saved
+        file_path = get_hashed_file_path(request.url, spider.name)
+        
+        if os.path.exists(file_path):
+            spider.logger.info(f"Skipping existing item: {request.url}")
+            raise IgnoreRequest(f"Item already exists at {file_path}")
+            
+        return None
